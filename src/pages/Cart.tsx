@@ -2,33 +2,36 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { Trash2, ArrowRight, Clock, Heart, Package } from 'lucide-react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { products } from '@/data/products';
-import { CartItem, Product } from '@/types/product';
+import { Product } from '@/types/product';
+
+// Simplified cart item for this page
+interface LocalCartItem {
+  product: Product;
+  quantity: number;
+}
 
 // Mock cart data - in real app would come from state/context
-const mockCartItems: CartItem[] = [
-  { productId: 'prod-001', quantity: 1, addedAt: new Date().toISOString() },
-  { productId: 'prod-002', quantity: 1, addedAt: new Date().toISOString() },
-];
+const getInitialCart = (): LocalCartItem[] => {
+  const prod1 = products.find(p => p.id === 'prod-001');
+  const prod2 = products.find(p => p.id === 'prod-002');
+  return [
+    prod1 && { product: prod1, quantity: 1 },
+    prod2 && { product: prod2, quantity: 1 },
+  ].filter(Boolean) as LocalCartItem[];
+};
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>(mockCartItems);
+  const [cartItems, setCartItems] = useState<LocalCartItem[]>(getInitialCart);
   const containerRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
 
-  const cartProducts = cartItems
-    .map(item => ({
-      ...item,
-      product: products.find(p => p.id === item.productId),
-    }))
-    .filter(item => item.product) as (CartItem & { product: Product })[];
-
-  const subtotal = cartProducts.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-  const totalYears = cartProducts.reduce((sum, item) => sum + item.product.metrics.usageYears, 0);
-  const totalMemories = cartProducts.reduce((sum, item) => sum + item.product.memories.length, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  const totalYears = cartItems.reduce((sum, item) => sum + item.product.metrics.usageYears, 0);
+  const totalMemories = cartItems.reduce((sum, item) => sum + item.product.memories.length, 0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -72,13 +75,13 @@ const Cart = () => {
         duration: 0.4,
         ease: 'power2.in',
         onComplete: () => {
-          setCartItems(prev => prev.filter(item => item.productId !== productId));
+          setCartItems(prev => prev.filter(item => item.product.id !== productId));
         },
       });
     }
   };
 
-  if (cartProducts.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -114,10 +117,10 @@ const Cart = () => {
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Cart Items */}
           <div ref={containerRef} className="lg:col-span-2 space-y-6">
-            {cartProducts.map((item) => (
+            {cartItems.map((item) => (
               <div
-                key={item.productId}
-                data-product-id={item.productId}
+                key={item.product.id}
+                data-product-id={item.product.id}
                 className="cart-item bg-card rounded-xl border border-border p-6 overflow-hidden"
               >
                 <div className="flex gap-6">
@@ -145,7 +148,7 @@ const Cart = () => {
                         </p>
                       </div>
                       <button
-                        onClick={() => removeItem(item.productId)}
+                        onClick={() => removeItem(item.product.id)}
                         className="text-muted-foreground hover:text-destructive transition-colors p-2"
                         aria-label="Remove item"
                       >
@@ -209,18 +212,18 @@ const Cart = () => {
                 <p className="text-sm text-muted-foreground mb-3">
                   You're about to inherit:
                 </p>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-foreground">Combined history</span>
-                    <span className="text-primary font-medium">{totalYears} years</span>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-foreground">Combined history</span>
+                      <span className="text-primary font-medium">{totalYears} years</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-foreground">Attached memories</span>
                     <span className="text-primary font-medium">{totalMemories} memories</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-foreground">Stories to continue</span>
-                    <span className="text-primary font-medium">{cartProducts.length}</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-foreground">Stories to continue</span>
+                      <span className="text-primary font-medium">{cartItems.length}</span>
                   </div>
                 </div>
               </div>

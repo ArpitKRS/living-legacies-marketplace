@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Heart, Clock, Leaf, Sparkles } from 'lucide-react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import ProductCard from '@/components/product/ProductCard';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
+import { ProductCard } from '@/components/product/ProductCard';
 import { getFeaturedProducts, getRecentProducts } from '@/data/products';
 import { Button } from '@/components/ui/button';
 
