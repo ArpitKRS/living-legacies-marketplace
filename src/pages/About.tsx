@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Heart, Clock, Leaf, Users, ArrowRight, Quote } from 'lucide-react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 
 gsap.registerPlugin(ScrollTrigger);
