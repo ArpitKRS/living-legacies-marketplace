@@ -64,19 +64,22 @@ const Browse: React.FC = () => {
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
             {categories.map((cat) => (
               <button
                 key={cat.value}
                 onClick={() => handleCategoryChange(cat.value)}
                 className={cn(
-                  'px-5 py-2 rounded-full font-body text-sm transition-all duration-300',
+                  'relative px-6 py-3 rounded-xl font-body text-sm transition-all duration-300 overflow-hidden group',
                   activeCategory === cat.value
-                    ? 'bg-primary text-primary-foreground shadow-warm'
-                    : 'bg-card text-muted-foreground hover:bg-muted border border-border/50'
+                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+                    : 'bg-card/80 text-muted-foreground hover:text-foreground border border-border/50 hover:border-primary/30 hover:shadow-md'
                 )}
               >
-                {cat.label}
+                <span className="relative z-10">{cat.label}</span>
+                {activeCategory !== cat.value && (
+                  <span className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                )}
               </button>
             ))}
           </div>
