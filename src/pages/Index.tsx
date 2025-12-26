@@ -2,25 +2,32 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, Heart, Clock, Leaf, Sparkles } from 'lucide-react';
+import { ArrowRight, Heart, Clock, Leaf, Sparkles, Camera, FileText, Users, CheckCircle } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/product/ProductCard';
 import { getFeaturedProducts, getRecentProducts } from '@/data/products';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Index = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
+  const orbsRef = useRef<HTMLDivElement>(null);
   const featuredRef = useRef<HTMLDivElement>(null);
   const philosophyRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
+  const sellSectionRef = useRef<HTMLDivElement>(null);
 
   const featuredProducts = getFeaturedProducts();
   const recentProducts = getRecentProducts();
+
+  const scrollToSell = () => {
+    sellSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -50,19 +57,19 @@ const Index = () => {
         });
       }
 
-      // Floating particles
-      if (particlesRef.current) {
-        const particles = particlesRef.current.children;
-        Array.from(particles).forEach((particle, i) => {
-          gsap.to(particle, {
-            y: -30 - Math.random() * 20,
-            x: Math.sin(i) * 20,
-            rotation: Math.random() * 10 - 5,
-            duration: 4 + Math.random() * 2,
+      // Floating orbs animation
+      if (orbsRef.current) {
+        const orbs = orbsRef.current.children;
+        Array.from(orbs).forEach((orb, i) => {
+          gsap.to(orb, {
+            y: -40 - Math.random() * 30,
+            x: Math.sin(i) * 30,
+            scale: 0.9 + Math.random() * 0.2,
+            duration: 6 + Math.random() * 4,
             ease: 'sine.inOut',
             repeat: -1,
             yoyo: true,
-            delay: i * 0.3,
+            delay: i * 0.5,
           });
         });
       }
@@ -123,15 +130,27 @@ const Index = () => {
           );
         });
       }
+
+      // Sell section animation
+      if (sellSectionRef.current) {
+        const items = sellSectionRef.current.querySelectorAll('.sell-step');
+        gsap.set(items, { opacity: 0, y: 40 });
+        gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sellSectionRef.current,
+            start: 'top 70%',
+          },
+        });
+      }
     });
 
     return () => ctx.revert();
   }, []);
-
-  const floatingWords = [
-    'memories', 'stories', 'heritage', 'warmth', 'legacy', 
-    'craftsmanship', 'soul', 'journey', 'time', 'love'
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -146,23 +165,27 @@ const Index = () => {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+')] opacity-50" />
         </div>
 
-        {/* Floating particles */}
+        {/* Soft floating orbs */}
         <div 
-          ref={particlesRef}
+          ref={orbsRef}
           className="absolute inset-0 overflow-hidden pointer-events-none"
         >
-          {floatingWords.map((word, i) => (
-            <span
-              key={word}
-              className="absolute text-primary/20 font-serif italic text-lg md:text-xl"
-              style={{
-                left: `${10 + (i % 5) * 20}%`,
-                top: `${20 + Math.floor(i / 5) * 40}%`,
-              }}
-            >
-              {word}
-            </span>
-          ))}
+          <div 
+            className="absolute w-64 h-64 rounded-full bg-gradient-to-br from-primary/10 to-transparent blur-3xl"
+            style={{ left: '10%', top: '20%' }}
+          />
+          <div 
+            className="absolute w-96 h-96 rounded-full bg-gradient-to-br from-accent/20 to-transparent blur-3xl"
+            style={{ right: '15%', top: '30%' }}
+          />
+          <div 
+            className="absolute w-72 h-72 rounded-full bg-gradient-to-br from-primary/5 to-accent/10 blur-3xl"
+            style={{ left: '40%', bottom: '20%' }}
+          />
+          <div 
+            className="absolute w-48 h-48 rounded-full bg-gradient-to-br from-muted/30 to-transparent blur-2xl"
+            style={{ right: '30%', bottom: '30%' }}
+          />
         </div>
 
         {/* Hero content */}
@@ -190,14 +213,6 @@ const Index = () => {
                 <Link to="/about">Our Philosophy</Link>
               </Button>
             </div>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-pulse">
-          <span className="text-muted-foreground text-sm">Scroll to discover</span>
-          <div className="w-6 h-10 border-2 border-muted-foreground/50 rounded-full flex justify-center">
-            <div className="w-1.5 h-3 bg-primary/50 rounded-full mt-2 animate-bounce" />
           </div>
         </div>
       </section>
@@ -308,17 +323,105 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-b from-card to-background border-t border-border">
+      {/* Sell Your Items Section */}
+      <section 
+        ref={sellSectionRef}
+        id="sell"
+        className="py-24 bg-gradient-to-b from-card to-background border-t border-border"
+      >
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-primary/70 font-medium tracking-widest uppercase text-sm mb-3">
+              Become a Seller
+            </p>
+            <h2 className="font-serif text-4xl md:text-5xl text-foreground mb-4">
+              Share Your Treasures
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+              Give your cherished items a new chapter. We'll help tell their story
+              and find them a loving new home.
+            </p>
+          </div>
+
+          {/* How it works */}
+          <div className="grid md:grid-cols-4 gap-8 mb-16">
+            {[
+              { icon: Camera, step: '01', title: 'Capture', desc: 'Take beautiful photos that show character and patina' },
+              { icon: FileText, step: '02', title: 'Tell the Story', desc: 'Share the memories and history behind your item' },
+              { icon: Users, step: '03', title: 'Connect', desc: 'We match your treasure with appreciative buyers' },
+              { icon: CheckCircle, step: '04', title: 'Complete', desc: 'Easy handoff with our guided delivery process' },
+            ].map((item, i) => (
+              <div key={i} className="sell-step text-center">
+                <div className="relative inline-block mb-4">
+                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                    <item.icon className="h-8 w-8 text-primary" />
+                  </div>
+                  <span className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-medium flex items-center justify-center">
+                    {item.step}
+                  </span>
+                </div>
+                <h3 className="font-serif text-lg text-foreground mb-2">{item.title}</h3>
+                <p className="text-muted-foreground text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Contact Form */}
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
+              <h3 className="font-serif text-2xl text-foreground mb-6 text-center">
+                Get Started
+              </h3>
+              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Your Name
+                    </label>
+                    <Input placeholder="Jane Smith" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Email
+                    </label>
+                    <Input type="email" placeholder="jane@example.com" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    What would you like to sell?
+                  </label>
+                  <Input placeholder="e.g., Vintage oak dining table from the 1960s" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Tell us the story
+                  </label>
+                  <Textarea 
+                    placeholder="Share the history, memories, and why this piece is special..."
+                    rows={4}
+                  />
+                </div>
+                <Button type="submit" size="lg" className="w-full group">
+                  Submit Your Item
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </form>
+              <p className="text-center text-muted-foreground text-sm mt-4">
+                We'll review your submission and get back within 48 hours
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16 bg-accent/20">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="font-serif text-4xl md:text-5xl text-foreground mb-6">
-            Have something with a story?
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-10">
-            We'd love to help your treasured item find its next loving home.
-            Every piece deserves a continued legacy.
+          <p className="text-muted-foreground text-lg mb-4">
+            Ready to give your treasures a new chapter?
           </p>
-          <Button size="lg" className="group">
+          <Button onClick={scrollToSell} variant="outline" size="lg" className="group">
             Start Selling
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>

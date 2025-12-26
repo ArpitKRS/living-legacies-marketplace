@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/product/ProductCard';
-import { products, getProductsByCategory } from '@/data/products';
-import { ProductCategory } from '@/types/product';
+import { getProductsByCategory } from '@/data/products';
 import { cn } from '@/lib/utils';
 
 const categories: { value: string; label: string }[] = [
@@ -16,9 +16,29 @@ const categories: { value: string; label: string }[] = [
 ];
 
 const Browse: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialCategory = searchParams.get('category') || 'all';
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const gridRef = useRef<HTMLDivElement>(null);
   const filteredProducts = getProductsByCategory(activeCategory);
+
+  // Update URL when category changes
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+    if (category === 'all') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ category });
+    }
+  };
+
+  // Sync state with URL on mount/navigation
+  useEffect(() => {
+    const urlCategory = searchParams.get('category') || 'all';
+    if (urlCategory !== activeCategory) {
+      setActiveCategory(urlCategory);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!gridRef.current) return;
@@ -48,7 +68,7 @@ const Browse: React.FC = () => {
             {categories.map((cat) => (
               <button
                 key={cat.value}
-                onClick={() => setActiveCategory(cat.value)}
+                onClick={() => handleCategoryChange(cat.value)}
                 className={cn(
                   'px-5 py-2 rounded-full font-body text-sm transition-all duration-300',
                   activeCategory === cat.value
