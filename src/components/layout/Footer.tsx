@@ -1,8 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category: string) => {
+    navigate(`/browse?category=${category}`);
+  };
+
   return (
     <footer className="bg-card border-t border-border/50 py-16">
       <div className="container mx-auto px-4">
@@ -31,21 +36,38 @@ export const Footer: React.FC = () => {
               Explore
             </h4>
             <ul className="space-y-3">
-              {[
-                { href: '/browse', label: 'Browse All' },
-                { href: '/browse?category=furniture', label: 'Furniture' },
-                { href: '/browse?category=electronics', label: 'Electronics' },
-                { href: '/browse?category=fashion', label: 'Fashion' },
-              ].map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="story-link font-body text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link
+                  to="/browse"
+                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Browse All
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleCategoryClick('furniture')}
+                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors text-left"
+                >
+                  Furniture
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleCategoryClick('electronics')}
+                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors text-left"
+                >
+                  Electronics
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleCategoryClick('fashion')}
+                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors text-left"
+                >
+                  Fashion
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -55,21 +77,38 @@ export const Footer: React.FC = () => {
               About
             </h4>
             <ul className="space-y-3">
-              {[
-                { href: '/about', label: 'Our Story' },
-                { href: '/philosophy', label: 'Philosophy' },
-                { href: '/sustainability', label: 'Sustainability' },
-                { href: '/contact', label: 'Contact' },
-              ].map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="story-link font-body text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link
+                  to="/about"
+                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Our Story
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/philosophy"
+                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Philosophy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/sustainability"
+                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Sustainability
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
