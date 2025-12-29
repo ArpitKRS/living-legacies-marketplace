@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import { ShoppingBag, Check } from 'lucide-react';
 import { Product } from '@/types/product';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/context/CartContext';
+import { toast } from 'sonner';
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +17,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0, cl
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const { addToCart, cartItems } = useCart();
+  
+  const isInCart = cartItems.some(item => item.product.id === product.id);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isInCart) {
+      addToCart(product);
+      toast.success(`${product.name} added to your collection`);
+    }
+  };
 
   useEffect(() => {
     if (!cardRef.current) return;
@@ -128,7 +143,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0, cl
             {product.tagline}
           </p>
 
-          {/* Price and condition */}
+          {/* Price and Add to Cart */}
           <div className="mt-4 flex items-end justify-between">
             <div>
               <span className="text-xl font-serif font-semibold text-foreground">
@@ -141,11 +156,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0, cl
               )}
             </div>
             
-            {/* Subtle condition score */}
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <span className="text-xs">Condition</span>
-              <span className="text-sm font-medium">{product.conditionScore}/10</span>
-            </div>
+            {/* Add to Cart Button */}
+            <button
+              onClick={handleAddToCart}
+              className={cn(
+                "p-2 rounded-full transition-all duration-300",
+                isInCart 
+                  ? "bg-primary/20 text-primary cursor-default" 
+                  : "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground"
+              )}
+              aria-label={isInCart ? "Added to cart" : "Add to cart"}
+            >
+              {isInCart ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
+            </button>
           </div>
         </div>
 
