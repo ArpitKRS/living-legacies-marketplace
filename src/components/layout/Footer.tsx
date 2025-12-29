@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-card border-t border-border/50 py-16">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
             <Link to="/" className="inline-block">
@@ -28,47 +28,6 @@ export const Footer: React.FC = () => {
               <span className="text-lg text-muted-foreground">◈</span>
               <span className="text-2xl">✧</span>
             </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-serif font-medium text-foreground mb-4">
-              Explore
-            </h4>
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  to="/browse"
-                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Browse All
-                </Link>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleCategoryClick('furniture')}
-                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors text-left"
-                >
-                  Furniture
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleCategoryClick('electronics')}
-                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors text-left"
-                >
-                  Electronics
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleCategoryClick('fashion')}
-                  className="story-link font-body text-muted-foreground hover:text-foreground transition-colors text-left"
-                >
-                  Fashion
-                </button>
-              </li>
-            </ul>
           </div>
 
           {/* About */}

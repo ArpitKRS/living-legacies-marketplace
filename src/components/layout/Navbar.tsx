@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/browse', label: 'Browse' },
   { href: '/about', label: 'Our Story' },
+  { href: '/sell', label: 'Sell' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({ cartCount = 0 }) => {
