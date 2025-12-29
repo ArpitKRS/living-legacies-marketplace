@@ -9,12 +9,17 @@ import { MemoryParticles } from '@/components/product/MemoryParticles';
 import { ReviewMemoryCards } from '@/components/product/ReviewMemoryCards';
 import { getProductById } from '@/data/products';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Check } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { toast } from 'sonner';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const product = getProductById(id || '');
   const heroRef = useRef<HTMLDivElement>(null);
+  const { addToCart, cartItems } = useCart();
+
+  const isInCart = product ? cartItems.some(item => item.product.id === product.id) : false;
 
   useEffect(() => {
     if (!heroRef.current) return;
@@ -23,6 +28,13 @@ const ProductDetail: React.FC = () => {
       { opacity: 1, duration: 1, ease: 'power2.out' }
     );
   }, []);
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(product);
+      toast.success(`${product.name} added to your collection`);
+    }
+  };
 
   if (!product) {
     return (
@@ -74,10 +86,17 @@ const ProductDetail: React.FC = () => {
               </div>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="flex-1 group">
-                  <ShoppingBag className="mr-2 w-5 h-5" />
-                  Continue This Story
-                </Button>
+                {isInCart ? (
+                  <Button size="lg" variant="outline" className="flex-1" disabled>
+                    <Check className="mr-2 w-5 h-5" />
+                    Added to Collection
+                  </Button>
+                ) : (
+                  <Button size="lg" className="flex-1 group" onClick={handleAddToCart}>
+                    <ShoppingBag className="mr-2 w-5 h-5" />
+                    Continue This Story
+                  </Button>
+                )}
               </div>
 
               {/* AI Summary */}

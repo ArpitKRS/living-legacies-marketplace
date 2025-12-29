@@ -1,31 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { Trash2, ArrowRight, Clock, Heart, Package } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
-import { products } from '@/data/products';
-import { Product } from '@/types/product';
-
-// Simplified cart item for this page
-interface LocalCartItem {
-  product: Product;
-  quantity: number;
-}
-
-// Mock cart data - in real app would come from state/context
-const getInitialCart = (): LocalCartItem[] => {
-  const prod1 = products.find(p => p.id === 'prod-001');
-  const prod2 = products.find(p => p.id === 'prod-002');
-  return [
-    prod1 && { product: prod1, quantity: 1 },
-    prod2 && { product: prod2, quantity: 1 },
-  ].filter(Boolean) as LocalCartItem[];
-};
+import { useCart } from '@/context/CartContext';
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState<LocalCartItem[]>(getInitialCart);
+  const { cartItems, removeFromCart, getCartCount } = useCart();
   const containerRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +46,7 @@ const Cart = () => {
     return () => ctx.revert();
   }, []);
 
-  const removeItem = (productId: string) => {
+  const handleRemoveItem = (productId: string) => {
     const itemEl = document.querySelector(`[data-product-id="${productId}"]`);
     if (itemEl) {
       gsap.to(itemEl, {
@@ -75,9 +58,11 @@ const Cart = () => {
         duration: 0.4,
         ease: 'power2.in',
         onComplete: () => {
-          setCartItems(prev => prev.filter(item => item.product.id !== productId));
+          removeFromCart(productId);
         },
       });
+    } else {
+      removeFromCart(productId);
     }
   };
 
@@ -148,7 +133,7 @@ const Cart = () => {
                         </p>
                       </div>
                       <button
-                        onClick={() => removeItem(item.product.id)}
+                        onClick={() => handleRemoveItem(item.product.id)}
                         className="text-muted-foreground hover:text-destructive transition-colors p-2"
                         aria-label="Remove item"
                       >

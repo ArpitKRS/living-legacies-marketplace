@@ -233,16 +233,16 @@ const About = () => {
                 What if every pre-owned item came with its story? Afterlife is our answer.
               </p>
             </div>
-            <div className="story-image relative">
-              <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-warm">
+            <div className="story-image relative max-w-sm mx-auto lg:mx-0">
+              <div className="aspect-square rounded-2xl overflow-hidden shadow-warm">
                 <img 
                   src={vintageDesk}
                   alt="Vintage desk with handwritten letters in warm golden light"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-xl p-6 shadow-warm max-w-xs">
-                <p className="font-serif text-lg text-foreground italic">
+              <div className="absolute -bottom-4 -left-4 bg-card border border-border rounded-xl p-4 shadow-warm max-w-[200px]">
+                <p className="font-serif text-sm text-foreground italic">
                   "Objects hold the fingerprints of lives well-lived"
                 </p>
               </div>

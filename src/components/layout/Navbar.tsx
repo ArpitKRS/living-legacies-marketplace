@@ -4,10 +4,7 @@ import gsap from 'gsap';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-
-interface NavbarProps {
-  cartCount?: number;
-}
+import { useCart } from '@/context/CartContext';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -16,7 +13,9 @@ const navLinks = [
   { href: '/sell', label: 'Sell' },
 ];
 
-export const Navbar: React.FC<NavbarProps> = ({ cartCount = 0 }) => {
+export const Navbar: React.FC = () => {
+  const { getCartCount } = useCart();
+  const cartCount = getCartCount();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
