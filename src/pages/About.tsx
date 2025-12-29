@@ -6,15 +6,51 @@ import { Heart, Clock, Leaf, Users, ArrowRight, Quote } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
+import vintageDesk from '@/assets/vintage-desk.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const journeySteps = [
+  {
+    step: '01',
+    title: 'Story Collection',
+    desc: 'Sellers share their item\'s history—where it came from, who loved it, what memories it holds.',
+    visual: '📜',
+  },
+  {
+    step: '02',
+    title: 'Verification & Curation',
+    desc: 'Our team verifies authenticity and condition, then crafts the item\'s narrative with care.',
+    visual: '🔍',
+  },
+  {
+    step: '03',
+    title: 'Visual Timeline Creation',
+    desc: 'We create a beautiful timeline documenting the item\'s journey through time and hands.',
+    visual: '📸',
+  },
+  {
+    step: '04',
+    title: 'Finding the Next Custodian',
+    desc: 'Buyers browse not just products, but stories—finding items that resonate with their own lives.',
+    visual: '💫',
+  },
+  {
+    step: '05',
+    title: 'The Transition',
+    desc: 'Items are carefully packaged with their documentation, ready to begin a new chapter.',
+    visual: '🎁',
+  },
+];
 
 const About = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
   const valuesRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
-  const processRef = useRef<HTMLDivElement>(null);
+  const journeySectionRef = useRef<HTMLDivElement>(null);
+  const journeyTrackRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -32,21 +68,43 @@ const About = () => {
         });
       }
 
-      // Story paragraphs
+      // Story section parallax
       if (storyRef.current) {
-        const paragraphs = storyRef.current.querySelectorAll('p');
-        gsap.set(paragraphs, { opacity: 0, y: 30 });
-        gsap.to(paragraphs, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: storyRef.current,
-            start: 'top 75%',
-          },
-        });
+        const image = storyRef.current.querySelector('.story-image');
+        const content = storyRef.current.querySelector('.story-content');
+        
+        if (image) {
+          gsap.fromTo(image, 
+            { y: 60, opacity: 0, scale: 0.95 },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 1.2,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: storyRef.current,
+                start: 'top 80%',
+              },
+            }
+          );
+        }
+
+        if (content) {
+          gsap.fromTo(content,
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: storyRef.current,
+                start: 'top 70%',
+              },
+            }
+          );
+        }
       }
 
       // Values cards
@@ -81,38 +139,58 @@ const About = () => {
         });
       }
 
-      // Process steps
-      if (processRef.current) {
-        const steps = processRef.current.querySelectorAll('.process-step');
-        const line = processRef.current.querySelector('.process-line');
-        
-        if (line) {
-          gsap.set(line, { scaleY: 0, transformOrigin: 'top' });
-          gsap.to(line, {
-            scaleY: 1,
-            duration: 1.5,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: processRef.current,
-              start: 'top 60%',
-              end: 'bottom 40%',
-              scrub: true,
-            },
-          });
-        }
+      // Horizontal scroll journey section
+      if (journeySectionRef.current && journeyTrackRef.current) {
+        const track = journeyTrackRef.current;
+        const cards = track.querySelectorAll('.journey-card');
+        const totalScroll = track.scrollWidth - window.innerWidth;
 
-        gsap.set(steps, { opacity: 0, x: -30 });
-        steps.forEach((step, i) => {
-          gsap.to(step, {
-            opacity: 1,
-            x: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: step,
-              start: 'top 80%',
+        // Horizontal scroll animation
+        const scrollTween = gsap.to(track, {
+          x: -totalScroll,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: journeySectionRef.current,
+            start: 'top top',
+            end: () => `+=${totalScroll}`,
+            pin: true,
+            scrub: 1,
+            anticipatePin: 1,
+            onUpdate: (self) => {
+              if (progressRef.current) {
+                gsap.to(progressRef.current, {
+                  scaleX: self.progress,
+                  duration: 0.1,
+                  ease: 'none',
+                });
+              }
             },
-          });
+          },
+        });
+
+        // Animate cards as they come into view
+        cards.forEach((card, i) => {
+          gsap.fromTo(card,
+            { 
+              opacity: 0.3, 
+              scale: 0.9,
+              rotateY: 15,
+            },
+            {
+              opacity: 1,
+              scale: 1,
+              rotateY: 0,
+              duration: 0.5,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                containerAnimation: scrollTween,
+                start: 'left 80%',
+                end: 'left 30%',
+                scrub: true,
+              },
+            }
+          );
         });
       }
     });
@@ -140,39 +218,26 @@ const About = () => {
         </div>
       </section>
 
-      {/* Origin Story */}
+      {/* Origin Story - Brief Version */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div ref={storyRef} className="space-y-6">
+          <div ref={storyRef} className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="story-content space-y-6">
               <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-6">
                 How It Began
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Afterlife was born from a simple observation: when we pass on our 
-                beloved possessions, we're not just transferring objects—we're 
-                sharing pieces of our lives.
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                Afterlife was born when our founder inherited her grandmother's writing desk—along with a letter describing every book written there, every memory it held. That desk became more than furniture; it became a portal to understanding.
               </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Our founder inherited her grandmother's writing desk. With it came 
-                a letter describing every book written at that desk, every letter 
-                penned, every quiet morning of creation. That desk became more than 
-                furniture—it became a portal to understanding someone she barely knew.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                That experience sparked a question: What if every pre-owned item 
-                came with its story? What if we could transform second-hand shopping 
-                from a transaction into an emotional inheritance?
-              </p>
-              <p className="text-foreground font-medium">
-                Afterlife is our answer.
+              <p className="text-foreground font-medium text-lg">
+                What if every pre-owned item came with its story? Afterlife is our answer.
               </p>
             </div>
-            <div className="relative">
-              <div className="aspect-[4/5] rounded-2xl overflow-hidden">
+            <div className="story-image relative">
+              <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-warm">
                 <img 
-                  src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800"
-                  alt="Vintage desk with warm lighting"
+                  src={vintageDesk}
+                  alt="Vintage desk with handwritten letters in warm golden light"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -255,58 +320,89 @@ const About = () => {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <p className="text-primary/70 font-medium tracking-widest uppercase text-sm mb-3">
-              The Journey
-            </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-foreground">
-              How Afterlife Works
-            </h2>
-          </div>
+      {/* The Journey - Horizontal Scroll */}
+      <section 
+        ref={journeySectionRef}
+        className="relative h-screen bg-gradient-to-b from-background via-accent/10 to-background overflow-hidden"
+      >
+        {/* Progress bar */}
+        <div className="fixed top-0 left-0 right-0 h-1 bg-border/30 z-50">
+          <div 
+            ref={progressRef}
+            className="h-full bg-primary origin-left"
+            style={{ transform: 'scaleX(0)' }}
+          />
+        </div>
 
-          <div ref={processRef} className="relative max-w-2xl mx-auto">
-            {/* Connecting line */}
-            <div className="process-line absolute left-6 top-0 bottom-0 w-0.5 bg-primary/30" />
+        {/* Section header - fixed during scroll */}
+        <div className="absolute top-8 left-0 right-0 z-10 text-center">
+          <p className="text-primary/70 font-medium tracking-widest uppercase text-sm mb-2">
+            The Journey
+          </p>
+          <h2 className="font-serif text-3xl md:text-4xl text-foreground">
+            How Afterlife Works
+          </h2>
+        </div>
 
-            {[
-              {
-                step: '01',
-                title: 'Story Collection',
-                desc: 'Sellers share their item\'s history—where it came from, who loved it, what memories it holds.',
-              },
-              {
-                step: '02',
-                title: 'Verification & Curation',
-                desc: 'Our team verifies authenticity and condition, then crafts the item\'s narrative with care.',
-              },
-              {
-                step: '03',
-                title: 'Visual Timeline Creation',
-                desc: 'We create a beautiful timeline documenting the item\'s journey through time and hands.',
-              },
-              {
-                step: '04',
-                title: 'Finding the Next Custodian',
-                desc: 'Buyers browse not just products, but stories—finding items that resonate with their own lives.',
-              },
-              {
-                step: '05',
-                title: 'The Transition',
-                desc: 'Items are carefully packaged with their documentation, ready to begin a new chapter.',
-              },
-            ].map((item, i) => (
-              <div key={i} className="process-step relative pl-16 pb-12 last:pb-0">
-                <div className="absolute left-0 w-12 h-12 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center">
-                  <span className="text-primary font-medium text-sm">{item.step}</span>
+        {/* Horizontal track */}
+        <div 
+          ref={journeyTrackRef}
+          className="absolute top-0 left-0 h-full flex items-center gap-8 px-[50vw] pt-24"
+          style={{ width: 'fit-content' }}
+        >
+          {journeySteps.map((item, i) => (
+            <div 
+              key={i}
+              className="journey-card relative flex-shrink-0 w-[400px] h-[500px] perspective-1000"
+            >
+              <div className="relative w-full h-full bg-card border border-border rounded-3xl p-8 flex flex-col shadow-warm overflow-hidden group">
+                {/* Large step number background */}
+                <div className="absolute -right-4 -top-4 text-[180px] font-serif font-bold text-primary/5 leading-none pointer-events-none">
+                  {item.step}
                 </div>
-                <h3 className="font-serif text-xl text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+                
+                {/* Visual emoji */}
+                <div className="text-6xl mb-6">{item.visual}</div>
+                
+                {/* Step indicator */}
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-medium text-sm">
+                    {item.step}
+                  </span>
+                  <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+                </div>
+                
+                {/* Content */}
+                <h3 className="font-serif text-2xl text-foreground mb-4">{item.title}</h3>
+                <p className="text-muted-foreground leading-relaxed flex-grow">{item.desc}</p>
+                
+                {/* Decorative corner */}
+                <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-primary/5 to-transparent rounded-tl-full" />
               </div>
-            ))}
+              
+              {/* Connecting line between cards */}
+              {i < journeySteps.length - 1 && (
+                <div className="absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-border to-primary/30" />
+              )}
+            </div>
+          ))}
+          
+          {/* End marker */}
+          <div className="flex-shrink-0 w-[200px] h-[500px] flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-20 h-20 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">✨</span>
+              </div>
+              <p className="font-serif text-xl text-foreground">New Chapter</p>
+              <p className="text-muted-foreground text-sm mt-2">Begins</p>
+            </div>
           </div>
+        </div>
+
+        {/* Scroll hint */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-sm">
+          <span>Scroll to explore</span>
+          <ArrowRight className="w-4 h-4 animate-pulse" />
         </div>
       </section>
 
