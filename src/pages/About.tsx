@@ -139,59 +139,78 @@ const About = () => {
         });
       }
 
-      // Horizontal scroll journey section
+      // Horizontal scroll journey section - responsive
       if (journeySectionRef.current && journeyTrackRef.current) {
         const track = journeyTrackRef.current;
         const cards = track.querySelectorAll('.journey-card');
-        const totalScroll = track.scrollWidth - window.innerWidth;
+        const isMobile = window.innerWidth < 768;
 
-        // Horizontal scroll animation
-        const scrollTween = gsap.to(track, {
-          x: -totalScroll,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: journeySectionRef.current,
-            start: 'top top',
-            end: () => `+=${totalScroll}`,
-            pin: true,
-            scrub: 1,
-            anticipatePin: 1,
-            onUpdate: (self) => {
-              if (progressRef.current) {
-                gsap.to(progressRef.current, {
-                  scaleX: self.progress,
-                  duration: 0.1,
-                  ease: 'none',
-                });
+        if (isMobile) {
+          // Vertical scroll animation for mobile
+          cards.forEach((card) => {
+            gsap.fromTo(card,
+              { opacity: 0, y: 60, scale: 0.95 },
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.8,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'top 85%',
+                  end: 'top 50%',
+                  toggleActions: 'play none none reverse',
+                },
               }
-            },
-          },
-        });
+            );
+          });
+        } else {
+          // Horizontal scroll for desktop
+          const totalScroll = track.scrollWidth - window.innerWidth;
 
-        // Animate cards as they come into view
-        cards.forEach((card, i) => {
-          gsap.fromTo(card,
-            { 
-              opacity: 0.3, 
-              scale: 0.9,
-              rotateY: 15,
-            },
-            {
-              opacity: 1,
-              scale: 1,
-              rotateY: 0,
-              duration: 0.5,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                containerAnimation: scrollTween,
-                start: 'left 80%',
-                end: 'left 30%',
-                scrub: true,
+          const scrollTween = gsap.to(track, {
+            x: -totalScroll,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: journeySectionRef.current,
+              start: 'top top',
+              end: () => `+=${totalScroll}`,
+              pin: true,
+              scrub: 1,
+              anticipatePin: 1,
+              onUpdate: (self) => {
+                if (progressRef.current) {
+                  gsap.to(progressRef.current, {
+                    scaleX: self.progress,
+                    duration: 0.1,
+                    ease: 'none',
+                  });
+                }
               },
-            }
-          );
-        });
+            },
+          });
+
+          cards.forEach((card) => {
+            gsap.fromTo(card,
+              { opacity: 0.3, scale: 0.9, rotateY: 15 },
+              {
+                opacity: 1,
+                scale: 1,
+                rotateY: 0,
+                duration: 0.5,
+                ease: 'power2.out',
+                scrollTrigger: {
+                  trigger: card,
+                  containerAnimation: scrollTween,
+                  start: 'left 80%',
+                  end: 'left 30%',
+                  scrub: true,
+                },
+              }
+            );
+          });
+        }
       }
     });
 
@@ -320,13 +339,13 @@ const About = () => {
         </div>
       </section>
 
-      {/* The Journey - Horizontal Scroll */}
+      {/* The Journey - Responsive Section */}
       <section 
         ref={journeySectionRef}
-        className="relative h-screen bg-gradient-to-b from-background via-accent/10 to-background overflow-hidden"
+        className="relative md:h-screen bg-gradient-to-b from-background via-accent/10 to-background overflow-hidden py-16 md:py-0"
       >
-        {/* Progress bar */}
-        <div className="fixed top-0 left-0 right-0 h-1 bg-border/30 z-50">
+        {/* Progress bar - desktop only */}
+        <div className="hidden md:block fixed top-0 left-0 right-0 h-1 bg-border/30 z-50">
           <div 
             ref={progressRef}
             className="h-full bg-primary origin-left"
@@ -334,8 +353,8 @@ const About = () => {
           />
         </div>
 
-        {/* Section header - fixed during scroll */}
-        <div className="absolute top-8 left-0 right-0 z-10 text-center">
+        {/* Section header */}
+        <div className="md:absolute md:top-8 left-0 right-0 z-10 text-center mb-8 md:mb-0">
           <p className="text-primary/70 font-medium tracking-widest uppercase text-sm mb-2">
             The Journey
           </p>
@@ -344,63 +363,100 @@ const About = () => {
           </h2>
         </div>
 
-        {/* Horizontal track */}
+        {/* Mobile: Vertical layout */}
+        <div className="md:hidden container mx-auto px-6">
+          <div ref={journeyTrackRef} className="space-y-6">
+            {journeySteps.map((item, i) => (
+              <div 
+                key={i}
+                className="journey-card relative"
+              >
+                <div className="relative bg-card border border-border rounded-2xl p-6 shadow-warm overflow-hidden">
+                  <div className="absolute -right-2 -top-2 text-[80px] font-serif font-bold text-primary/5 leading-none pointer-events-none">
+                    {item.step}
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="text-4xl flex-shrink-0">{item.visual}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="w-8 h-8 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-medium text-xs">
+                          {item.step}
+                        </span>
+                        <h3 className="font-serif text-lg text-foreground">{item.title}</h3>
+                      </div>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {i < journeySteps.length - 1 && (
+                  <div className="absolute left-1/2 -bottom-3 w-px h-6 bg-gradient-to-b from-border to-primary/30" />
+                )}
+              </div>
+            ))}
+            
+            {/* End marker - mobile */}
+            <div className="text-center py-6">
+              <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">✨</span>
+              </div>
+              <p className="font-serif text-lg text-foreground">New Chapter Begins</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Horizontal track */}
         <div 
           ref={journeyTrackRef}
-          className="absolute top-0 left-0 h-full flex items-center gap-8 px-[50vw] pt-24"
+          className="hidden md:flex absolute top-0 left-0 h-full items-center gap-8 px-[50vw] pt-24"
           style={{ width: 'fit-content' }}
         >
           {journeySteps.map((item, i) => (
             <div 
               key={i}
-              className="journey-card relative flex-shrink-0 w-[400px] h-[500px] perspective-1000"
+              className="journey-card relative flex-shrink-0 w-[350px] lg:w-[400px] h-[450px] lg:h-[500px] perspective-1000"
             >
-              <div className="relative w-full h-full bg-card border border-border rounded-3xl p-8 flex flex-col shadow-warm overflow-hidden group">
-                {/* Large step number background */}
-                <div className="absolute -right-4 -top-4 text-[180px] font-serif font-bold text-primary/5 leading-none pointer-events-none">
+              <div className="relative w-full h-full bg-card border border-border rounded-3xl p-6 lg:p-8 flex flex-col shadow-warm overflow-hidden group">
+                <div className="absolute -right-4 -top-4 text-[140px] lg:text-[180px] font-serif font-bold text-primary/5 leading-none pointer-events-none">
                   {item.step}
                 </div>
                 
-                {/* Visual emoji */}
-                <div className="text-6xl mb-6">{item.visual}</div>
+                <div className="text-5xl lg:text-6xl mb-4 lg:mb-6">{item.visual}</div>
                 
-                {/* Step indicator */}
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-medium text-sm">
+                <div className="flex items-center gap-3 mb-3 lg:mb-4">
+                  <span className="w-8 lg:w-10 h-8 lg:h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-medium text-sm">
                     {item.step}
                   </span>
                   <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
                 </div>
                 
-                {/* Content */}
-                <h3 className="font-serif text-2xl text-foreground mb-4">{item.title}</h3>
-                <p className="text-muted-foreground leading-relaxed flex-grow">{item.desc}</p>
+                <h3 className="font-serif text-xl lg:text-2xl text-foreground mb-3 lg:mb-4">{item.title}</h3>
+                <p className="text-muted-foreground text-sm lg:text-base leading-relaxed flex-grow">{item.desc}</p>
                 
-                {/* Decorative corner */}
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-primary/5 to-transparent rounded-tl-full" />
+                <div className="absolute bottom-0 right-0 w-24 lg:w-32 h-24 lg:h-32 bg-gradient-to-tl from-primary/5 to-transparent rounded-tl-full" />
               </div>
               
-              {/* Connecting line between cards */}
               {i < journeySteps.length - 1 && (
                 <div className="absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-border to-primary/30" />
               )}
             </div>
           ))}
           
-          {/* End marker */}
-          <div className="flex-shrink-0 w-[200px] h-[500px] flex items-center justify-center">
+          {/* End marker - desktop */}
+          <div className="flex-shrink-0 w-[150px] lg:w-[200px] h-[450px] lg:h-[500px] flex items-center justify-center">
             <div className="text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">✨</span>
+              <div className="w-16 lg:w-20 h-16 lg:h-20 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl lg:text-3xl">✨</span>
               </div>
-              <p className="font-serif text-xl text-foreground">New Chapter</p>
+              <p className="font-serif text-lg lg:text-xl text-foreground">New Chapter</p>
               <p className="text-muted-foreground text-sm mt-2">Begins</p>
             </div>
           </div>
         </div>
 
-        {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-sm">
+        {/* Scroll hint - desktop only */}
+        <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 items-center gap-2 text-muted-foreground text-sm">
           <span>Scroll to explore</span>
           <ArrowRight className="w-4 h-4 animate-pulse" />
         </div>
