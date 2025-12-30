@@ -19,6 +19,19 @@ const Sell = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string>('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate submission delay
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+    }, 1500);
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -268,126 +281,166 @@ const Sell = () => {
           </div>
 
           <div ref={formRef} className="max-w-2xl mx-auto">
-            <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Your Name
-                    </label>
-                    <Input placeholder="Jane Smith" />
+            <div className="bg-card border border-border rounded-2xl p-8 shadow-lg overflow-hidden">
+              {isSubmitted ? (
+                <div className="text-center py-8 animate-fade-in">
+                  <div className="w-20 h-20 rounded-full bg-green-500/10 border-2 border-green-500 flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle className="w-10 h-10 text-green-500" />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Email
-                    </label>
-                    <Input type="email" placeholder="jane@example.com" />
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Item Category
-                    </label>
-                    <Input placeholder="e.g., Furniture, Electronics, Fashion" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Approximate Age
-                    </label>
-                    <Input placeholder="e.g., 1960s, 30 years" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    What would you like to sell?
-                  </label>
-                  <Input placeholder="e.g., Vintage oak dining table from the 1960s" />
-                </div>
-                
-                {/* Image Upload Section */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Upload Image
-                  </label>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="item-image"
-                  />
-                  
-                  {!imagePreview ? (
-                    <label
-                      htmlFor="item-image"
-                      className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-accent/30 transition-colors"
+                  <h3 className="font-serif text-2xl text-foreground mb-3">
+                    Submission Received!
+                  </h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Thank you for sharing your treasure with us. Our team will review your submission 
+                    and get back to you within 48 hours.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setIsSubmitted(false);
+                        setImagePreview(null);
+                        setImageName('');
+                      }}
                     >
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="w-8 h-8 text-muted-foreground mb-3" />
-                        <p className="text-sm text-muted-foreground">
-                          <span className="font-medium text-primary">Click to upload</span> or drag and drop
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WEBP up to 10MB</p>
+                      Submit Another Item
+                    </Button>
+                    <Button asChild>
+                      <Link to="/browse">Browse Collection</Link>
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <form className="space-y-6" onSubmit={handleSubmit}>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Your Name
+                        </label>
+                        <Input placeholder="Jane Smith" />
                       </div>
-                    </label>
-                  ) : (
-                    <div className="relative w-full h-48 rounded-xl overflow-hidden border border-border bg-accent/20">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-full h-full object-contain"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent p-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <ImageIcon className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm text-foreground truncate max-w-[200px]">{imageName}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => fileInputRef.current?.click()}
-                              className="h-8"
-                            >
-                              Change
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={removeImage}
-                              className="h-8 w-8 p-0"
-                            >
-                              <X className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Email
+                        </label>
+                        <Input type="email" placeholder="jane@example.com" />
                       </div>
                     </div>
-                  )}
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Tell us the story
-                  </label>
-                  <Textarea 
-                    placeholder="Share the history, memories, and why this piece is special to you..."
-                    rows={5}
-                  />
-                </div>
-                <Button type="submit" size="lg" className="w-full group">
-                  Submit Your Item
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </form>
-              <p className="text-center text-muted-foreground text-sm mt-6">
-                We'll review your submission and get back within 48 hours with next steps
-              </p>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Item Category
+                        </label>
+                        <Input placeholder="e.g., Furniture, Electronics, Fashion" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Approximate Age
+                        </label>
+                        <Input placeholder="e.g., 1960s, 30 years" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        What would you like to sell?
+                      </label>
+                      <Input placeholder="e.g., Vintage oak dining table from the 1960s" />
+                    </div>
+                    
+                    {/* Image Upload Section */}
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Upload Image
+                      </label>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="item-image"
+                      />
+                      
+                      {!imagePreview ? (
+                        <label
+                          htmlFor="item-image"
+                          className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-accent/30 transition-colors"
+                        >
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-8 h-8 text-muted-foreground mb-3" />
+                            <p className="text-sm text-muted-foreground">
+                              <span className="font-medium text-primary">Click to upload</span> or drag and drop
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WEBP up to 10MB</p>
+                          </div>
+                        </label>
+                      ) : (
+                        <div className="relative w-full h-48 rounded-xl overflow-hidden border border-border bg-accent/20">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="w-full h-full object-contain"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent p-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-sm text-foreground truncate max-w-[200px]">{imageName}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => fileInputRef.current?.click()}
+                                  className="h-8"
+                                >
+                                  Change
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={removeImage}
+                                  className="h-8 w-8 p-0"
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Tell us the story
+                      </label>
+                      <Textarea 
+                        placeholder="Share the history, memories, and why this piece is special to you..."
+                        rows={5}
+                      />
+                    </div>
+                    <Button type="submit" size="lg" className="w-full group" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          <span className="animate-pulse">Submitting...</span>
+                        </>
+                      ) : (
+                        <>
+                          Submit Your Item
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                  <p className="text-center text-muted-foreground text-sm mt-6">
+                    We'll review your submission and get back within 48 hours with next steps
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

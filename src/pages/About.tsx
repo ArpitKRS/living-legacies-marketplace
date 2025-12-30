@@ -480,7 +480,7 @@ const About = () => {
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/">Start Selling</Link>
+              <Link to="/sell">Start Selling</Link>
             </Button>
           </div>
         </div>
