@@ -336,9 +336,23 @@ const Sell = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          Approximate Age
+                          Age of Item (years)
                         </label>
-                        <Input placeholder="e.g., 1960s, 30 years" />
+                        <Input type="number" placeholder="e.g., 8" min="1" max="100" />
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Years in Your Care
+                        </label>
+                        <Input type="number" placeholder="e.g., 5" min="0" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Previous Caretakers (before you)
+                        </label>
+                        <Input type="number" placeholder="e.g., 2" min="0" />
                       </div>
                     </div>
                     <div>

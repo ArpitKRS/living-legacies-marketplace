@@ -271,54 +271,65 @@ const SustainabilityShape: React.FC<SustainabilityShapeProps> = ({ value }) => {
 export const ProductMetrics: React.FC<ProductMetricsProps> = ({ metrics, className }) => {
   return (
     <div className={cn('py-12', className)}>
-      <h3 className="text-2xl font-serif font-semibold text-foreground text-center mb-10">
+      <h3 className="text-2xl font-serif font-semibold text-foreground text-center mb-4">
         The Numbers Tell a Story
       </h3>
+      <p className="text-center text-muted-foreground font-body mb-12 max-w-md mx-auto">
+        Every number represents moments lived, care given, and impact made
+      </p>
       
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-start justify-items-center">
-        {/* Usage Years - Ring */}
-        <MetricRing
-          value={metrics.usageYears}
-          max={100}
-          label="Years of Life"
-          sublabel="years"
-          color="hsl(28, 65%, 45%)"
-          delay={0}
-        />
+      {/* Main metrics grid - structured layout */}
+      <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          {/* Usage Years - Ring */}
+          <div className="bg-card/50 rounded-2xl p-6 border border-border/30 flex flex-col items-center">
+            <MetricRing
+              value={metrics.usageYears}
+              max={30}
+              label="Years of Life"
+              sublabel="years"
+              color="hsl(28, 65%, 45%)"
+              delay={0}
+            />
+          </div>
 
-        {/* Care Score - Heartbeat */}
-        <HeartbeatMetric
-          value={metrics.careScore}
-          label="Care Score"
-        />
+          {/* Care Score - Heartbeat */}
+          <div className="bg-card/50 rounded-2xl p-6 border border-border/30 flex flex-col items-center">
+            <HeartbeatMetric
+              value={metrics.careScore}
+              label="Care Score"
+            />
+          </div>
 
-        {/* Trust Level - Glow Bar */}
-        <div className="col-span-2 md:col-span-1 w-full flex justify-center">
-          <GlowBar
-            value={metrics.trustLevel}
-            max={100}
-            label="Trust Level"
-          />
+          {/* Trust Level - Glow Bar */}
+          <div className="bg-card/50 rounded-2xl p-6 border border-border/30 flex flex-col items-center justify-center">
+            <GlowBar
+              value={metrics.trustLevel}
+              max={100}
+              label="Trust Level"
+            />
+          </div>
+
+          {/* Sustainability - Organic Shape */}
+          <div className="bg-card/50 rounded-2xl p-6 border border-border/30 flex flex-col items-center">
+            <SustainabilityShape value={metrics.sustainabilityImpact} />
+          </div>
         </div>
 
-        {/* Sustainability - Organic Shape */}
-        <SustainabilityShape value={metrics.sustainabilityImpact} />
-      </div>
-
-      {/* Additional stats */}
-      <div className="mt-12 flex flex-wrap justify-center gap-8 text-center">
-        <div className="space-y-1">
-          <span className="text-3xl font-serif font-bold text-primary">
-            {metrics.previousOwners}
-          </span>
-          <p className="text-sm text-muted-foreground">Previous Caretakers</p>
-        </div>
-        <div className="w-px h-12 bg-border hidden md:block" />
-        <div className="space-y-1">
-          <span className="text-3xl font-serif font-bold text-primary">
-            {metrics.journeyMiles.toLocaleString()}
-          </span>
-          <p className="text-sm text-muted-foreground">Miles Traveled</p>
+        {/* Secondary stats - clean row */}
+        <div className="mt-8 grid grid-cols-2 gap-4 max-w-md mx-auto">
+          <div className="bg-primary/5 rounded-xl p-4 text-center border border-primary/10">
+            <span className="text-2xl font-serif font-bold text-primary block">
+              {metrics.previousOwners}
+            </span>
+            <p className="text-xs text-muted-foreground mt-1">Previous Caretakers</p>
+          </div>
+          <div className="bg-primary/5 rounded-xl p-4 text-center border border-primary/10">
+            <span className="text-2xl font-serif font-bold text-primary block">
+              {metrics.journeyMiles.toLocaleString()}
+            </span>
+            <p className="text-xs text-muted-foreground mt-1">Miles Traveled</p>
+          </div>
         </div>
       </div>
     </div>

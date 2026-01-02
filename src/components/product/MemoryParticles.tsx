@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Memory } from '@/types/product';
 import { cn } from '@/lib/utils';
@@ -18,47 +18,39 @@ const getSentimentColor = (sentiment: Memory['sentiment']): string => {
   return colors[sentiment];
 };
 
+const getSentimentBg = (sentiment: Memory['sentiment']): string => {
+  const colors: Record<Memory['sentiment'], string> = {
+    'warm': 'from-primary/20 to-primary/5',
+    'nostalgic': 'from-sepia/20 to-sepia/5',
+    'joyful': 'from-aged-gold/20 to-aged-gold/5',
+    'bittersweet': 'from-memory-blue/20 to-memory-blue/5',
+  };
+  return colors[sentiment];
+};
+
 export const MemoryParticles: React.FC<MemoryParticlesProps> = ({ memories, className }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [activeMemory, setActiveMemory] = useState<string | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const particles = particlesRef.current.filter(Boolean);
-
-    // Set initial random positions
-    particles.forEach((particle, index) => {
-      if (!particle) return;
-
-      const randomX = (Math.random() - 0.5) * 100;
-      const randomY = Math.random() * 50;
-      const randomRotation = (Math.random() - 0.5) * 10;
-
-      gsap.set(particle, {
-        x: randomX,
-        y: randomY,
-        rotation: randomRotation,
-        opacity: 0.6 + Math.random() * 0.4,
-      });
-
-      // Floating animation
-      gsap.to(particle, {
-        y: randomY - 20 - Math.random() * 30,
-        x: randomX + (Math.random() - 0.5) * 40,
-        rotation: randomRotation + (Math.random() - 0.5) * 5,
-        duration: 4 + Math.random() * 3,
+    const cards = containerRef.current.querySelectorAll('.memory-card');
+    
+    // Subtle floating animation for each card
+    cards.forEach((card, index) => {
+      gsap.to(card, {
+        y: -5 + Math.random() * 10,
+        duration: 3 + Math.random() * 2,
         ease: 'sine.inOut',
         repeat: -1,
         yoyo: true,
-        delay: index * 0.5,
+        delay: index * 0.3,
       });
     });
 
     return () => {
-      particles.forEach(particle => {
-        if (particle) gsap.killTweensOf(particle);
-      });
+      cards.forEach(card => gsap.killTweensOf(card));
     };
   }, [memories]);
 
@@ -66,68 +58,76 @@ export const MemoryParticles: React.FC<MemoryParticlesProps> = ({ memories, clas
     <div 
       ref={containerRef}
       className={cn(
-        'relative min-h-[300px] flex items-center justify-center py-16',
+        'relative py-12',
         className
       )}
     >
-      {/* Background glow */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-accent/5 rounded-3xl" />
-
-      {/* Title */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 text-center z-10">
-        <h3 className="text-xl font-serif font-medium text-foreground/80">
+      {/* Section header */}
+      <div className="text-center mb-10">
+        <h3 className="text-2xl font-serif font-semibold text-foreground mb-2">
           Memories Attached
         </h3>
-        <p className="text-sm text-muted-foreground mt-1">
-          Hover to feel the echoes
+        <p className="text-muted-foreground font-body text-sm">
+          Echoes of moments this piece has witnessed
         </p>
       </div>
 
-      {/* Memory particles */}
-      <div className="relative w-full max-w-2xl h-48">
-        {memories.map((memory, index) => (
+      {/* Memory cards grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        {memories.map((memory) => (
           <div
             key={memory.id}
-            ref={el => particlesRef.current[index] = el}
-            className={cn(
-              'absolute cursor-pointer group',
-              'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
-            )}
-            style={{
-              left: `${20 + (index * 30) % 60}%`,
-              top: `${30 + (index * 20) % 40}%`,
-            }}
+            className="memory-card relative"
+            onMouseEnter={() => setActiveMemory(memory.id)}
+            onMouseLeave={() => setActiveMemory(null)}
           >
-            {/* Particle bubble */}
             <div className={cn(
-              'px-4 py-2 rounded-full backdrop-blur-sm',
-              'bg-card/60 border border-border/50 shadow-soft',
-              'transition-all duration-500 ease-out',
-              'group-hover:scale-110 group-hover:shadow-warm group-hover:bg-card/90',
+              'relative p-5 rounded-xl border transition-all duration-300 cursor-pointer',
+              'bg-gradient-to-br',
+              getSentimentBg(memory.sentiment),
+              activeMemory === memory.id
+                ? 'border-primary/40 shadow-warm scale-[1.02]'
+                : 'border-border/30 shadow-soft'
             )}>
+              {/* Quote icon */}
+              <span className="absolute top-3 left-4 text-2xl opacity-20 font-serif">"</span>
+              
+              {/* Memory text */}
               <p className={cn(
-                'text-sm font-body italic whitespace-nowrap',
-                'opacity-70 group-hover:opacity-100 transition-opacity duration-300',
+                'font-body italic text-sm leading-relaxed pl-4 pr-2',
+                'transition-all duration-300',
+                activeMemory === memory.id ? 'opacity-100' : 'opacity-80',
                 getSentimentColor(memory.sentiment)
               )}>
-                "{memory.text}"
+                {memory.text}
               </p>
-            </div>
 
-            {/* Connecting line on hover */}
-            <div className="absolute top-1/2 left-1/2 w-px h-8 bg-gradient-to-b from-primary/50 to-transparent -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              {/* Sentiment indicator */}
+              <div className={cn(
+                'mt-3 flex items-center gap-2 pl-4',
+                'transition-opacity duration-300',
+                activeMemory === memory.id ? 'opacity-100' : 'opacity-50'
+              )}>
+                <span className="text-xs text-muted-foreground capitalize">
+                  {memory.sentiment} memory
+                </span>
+              </div>
+
+              {/* Decorative corner */}
+              <span className="absolute bottom-2 right-3 text-lg opacity-10">✧</span>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Decorative elements */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <div className="flex items-center gap-3 text-muted-foreground/50">
-          <span className="text-2xl">✧</span>
-          <span className="text-lg">✦</span>
-          <span className="text-2xl">✧</span>
+      {/* Empty state */}
+      {memories.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground/60 italic">
+            No memories have been shared yet
+          </p>
         </div>
-      </div>
+      )}
     </div>
   );
 };

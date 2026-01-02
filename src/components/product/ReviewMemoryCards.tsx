@@ -162,6 +162,9 @@ export const ReviewMemoryCards: React.FC<ReviewMemoryCardsProps> = ({ reviews, c
     };
   }, [reviews]);
 
+  // If no reviews, show placeholder content
+  const hasReviews = reviews && reviews.length > 0;
+
   return (
     <div className={cn('py-12', className)}>
       <div className="text-center mb-10">
@@ -173,17 +176,51 @@ export const ReviewMemoryCards: React.FC<ReviewMemoryCardsProps> = ({ reviews, c
         </p>
       </div>
 
-      <div 
-        ref={containerRef}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
-      >
-        {reviews.map((review, index) => (
-          <ReviewCard key={review.id} review={review} index={index} />
-        ))}
-      </div>
+      {hasReviews ? (
+        <div 
+          ref={containerRef}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+        >
+          {reviews.map((review, index) => (
+            <ReviewCard key={review.id} review={review} index={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="max-w-2xl mx-auto">
+          {/* Empty state with inviting design */}
+          <div className="bg-gradient-to-br from-accent/30 to-card rounded-2xl border border-border/30 p-10 text-center">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-2xl">✧</span>
+            </div>
+            <h4 className="font-serif text-xl text-foreground mb-3">
+              Be the First to Share
+            </h4>
+            <p className="text-muted-foreground font-body leading-relaxed mb-6 max-w-md mx-auto">
+              This piece awaits its next chapter. When you become its caretaker, 
+              your story will be the first in a new volume of memories.
+            </p>
+            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground/60">
+              <span className="flex items-center gap-1">
+                <span className="text-primary">♡</span> Share your experience
+              </span>
+              <span className="text-border">|</span>
+              <span className="flex items-center gap-1">
+                <span className="text-primary">✎</span> Write your chapter
+              </span>
+            </div>
+          </div>
+
+          {/* Decorative quote */}
+          <div className="mt-8 text-center">
+            <p className="text-muted-foreground/50 italic font-body text-sm">
+              "Every object is waiting to become part of someone's story"
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Note about no star ratings */}
-      <p className="text-center text-sm text-muted-foreground/60 mt-8 font-body italic">
+      <p className="text-center text-sm text-muted-foreground/60 mt-10 font-body italic">
         We don't believe in stars. Every connection is unique.
       </p>
     </div>
