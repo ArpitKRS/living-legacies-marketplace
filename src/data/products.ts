@@ -18,7 +18,7 @@ export const products: Product[] = [
     price: 1850,
     originalPrice: 3200,
     images: [
-      'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800',
+      'https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=800',
       'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800',
     ],
     timeline: [
@@ -80,7 +80,7 @@ export const products: Product[] = [
     originalPrice: 5200,
     images: [
       'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=800',
-      'https://images.unsplash.com/photo-1589384267710-7a170981ca78?w=800',
+      'https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?w=800',
     ],
     timeline: [
       {
@@ -127,8 +127,8 @@ export const products: Product[] = [
     price: 4800,
     originalPrice: 8000,
     images: [
-      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800',
-      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800',
+      'https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=800',
+      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800',
     ],
     timeline: [
       {
@@ -175,7 +175,7 @@ export const products: Product[] = [
     price: 1200,
     originalPrice: 2800,
     images: [
-      'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=800',
+      'https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?w=800',
     ],
     timeline: [
       { id: 'tl-f001-1', type: 'birth', date: '2009-04-01', title: 'Industrial Origins', description: 'Built for precision work.' },
@@ -203,8 +203,8 @@ export const products: Product[] = [
     price: 450,
     originalPrice: 680,
     images: [
-      'https://images.unsplash.com/photo-1504707748692-419802cf939d?w=800',
-      'https://images.unsplash.com/photo-1584811644165-33db3b146db5?w=800',
+      'https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=800',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800',
     ],
     timeline: [
       {
@@ -252,8 +252,8 @@ export const products: Product[] = [
     price: 3800,
     originalPrice: 5800,
     images: [
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800',
-      'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?w=800',
+      'https://images.unsplash.com/photo-1495707902641-75cac588d2e9?w=800',
+      'https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=800',
     ],
     timeline: [
       {
@@ -301,7 +301,7 @@ export const products: Product[] = [
     price: 1800,
     originalPrice: 2400,
     images: [
-      'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=800',
+      'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800',
     ],
     timeline: [
       { id: 'tl-e001-1', type: 'birth', date: '2016-01-01', title: 'Studio Ready', description: 'Built for professional broadcasting.' },
@@ -326,7 +326,7 @@ export const products: Product[] = [
     price: 2200,
     originalPrice: 3500,
     images: [
-      'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800',
+      'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800',
     ],
     timeline: [
       { id: 'tl-e002-1', type: 'birth', date: '2011-03-01', title: 'Japanese Precision', description: 'Crafted in Japan.' },
@@ -354,7 +354,7 @@ export const products: Product[] = [
     price: 1200,
     originalPrice: 3500,
     images: [
-      'https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?w=800',
+      'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800',
     ],
     timeline: [
       { id: 'tl-fash001-1', type: 'birth', date: '2017-05-01', title: 'Custom Creation', description: 'Hand-crafted by a local atelier.' },
@@ -380,7 +380,7 @@ export const products: Product[] = [
     price: 380,
     originalPrice: 650,
     images: [
-      'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800',
+      'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800',
     ],
     timeline: [
       { id: 'tl-fash002-1', type: 'birth', date: '2016-09-01', title: 'Scottish Heritage', description: 'Woven in the Outer Hebrides.' },
@@ -405,7 +405,7 @@ export const products: Product[] = [
     price: 650,
     originalPrice: 1200,
     images: [
-      'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=800',
+      'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=800',
     ],
     timeline: [
       { id: 'tl-fash003-1', type: 'birth', date: '2018-01-01', title: 'Parisian Elegance', description: 'Designed in a Parisian atelier.' },
@@ -433,8 +433,8 @@ export const products: Product[] = [
     price: 2800,
     originalPrice: 4200,
     images: [
-      'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800',
-      'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=800',
+      'https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=800',
+      'https://images.unsplash.com/photo-1539874754764-5a96559165b0?w=800',
     ],
     timeline: [
       {
@@ -482,7 +482,7 @@ export const products: Product[] = [
     price: 850,
     originalPrice: 1400,
     images: [
-      'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800',
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800',
     ],
     timeline: [
       { id: 'tl-acc001-1', type: 'birth', date: '2012-01-01', title: 'British Craftsmanship', description: 'Handmade in London.' },
@@ -507,7 +507,7 @@ export const products: Product[] = [
     price: 280,
     originalPrice: 450,
     images: [
-      'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800',
+      'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800',
     ],
     timeline: [
       { id: 'tl-acc002-1', type: 'birth', date: '2014-01-01', title: 'Artist\'s Tool', description: 'Shaped for the creative hand.' },
@@ -532,7 +532,7 @@ export const products: Product[] = [
     price: 3200,
     originalPrice: 6500,
     images: [
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800',
+      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800',
     ],
     timeline: [
       { id: 'tl-acc003-1', type: 'birth', date: '1999-06-01', title: 'Tokyo Origins', description: 'Selected from the finest pearls.' },
