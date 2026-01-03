@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { ShoppingBag, Menu, X, ClipboardList } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
@@ -89,8 +89,18 @@ export const Navbar: React.FC = () => {
           ))}
         </div>
 
-        {/* Cart & Mobile Menu */}
-        <div className="flex items-center gap-4">
+        {/* Orders & Cart & Mobile Menu */}
+        <div className="flex items-center gap-2">
+          <Link to="/orders" className="relative group">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="relative hover:bg-primary/10"
+            >
+              <ClipboardList className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" />
+            </Button>
+          </Link>
+          
           <Link to="/cart" className="relative group">
             <Button 
               variant="ghost" 

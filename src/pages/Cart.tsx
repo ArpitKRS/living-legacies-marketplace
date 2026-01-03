@@ -6,11 +6,13 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
+import { useOrders } from '@/context/OrderContext';
 import { DeliveryJourney } from '@/components/delivery/DeliveryJourney';
 import { DeliveryTracking } from '@/types/product';
 
 const Cart = () => {
   const { cartItems, removeFromCart, getCartCount, clearCart } = useCart();
+  const { addOrder } = useOrders();
   const containerRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -29,28 +31,12 @@ const Cart = () => {
     // Simulate checkout process
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Create tracking data for the first product
-    const product = cartItems[0].product;
-    const now = new Date();
-    const estimatedArrival = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+    // Create order and get tracking data
+    const products = cartItems.map(item => item.product);
+    const totalAmount = subtotal + 25; // Including packaging fee
+    const order = addOrder(products, totalAmount);
     
-    const tracking: DeliveryTracking = {
-      orderId: `ORD-${Date.now()}`,
-      product: product,
-      status: 'farewell',
-      statusHistory: [
-        {
-          status: 'farewell',
-          date: now.toISOString(),
-          message: `${product.name} is being carefully prepared for its journey to you`
-        }
-      ],
-      estimatedArrival: estimatedArrival.toISOString(),
-      currentLocation: product.currentLocation,
-      journeyProgress: 15
-    };
-    
-    setTrackingData(tracking);
+    setTrackingData(order.tracking);
     setOrderPlaced(true);
     setIsProcessing(false);
     clearCart();
@@ -137,10 +123,10 @@ const Cart = () => {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild variant="outline" size="lg">
-              <Link to="/browse">Continue Browsing</Link>
+              <Link to="/orders">View All Orders</Link>
             </Button>
             <Button asChild size="lg">
-              <Link to="/">Back to Home</Link>
+              <Link to="/browse">Continue Browsing</Link>
             </Button>
           </div>
         </main>
