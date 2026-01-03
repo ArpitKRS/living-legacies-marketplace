@@ -1,20 +1,60 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
-import { Trash2, ArrowRight, Clock, Heart, Package } from 'lucide-react';
+import { Trash2, ArrowRight, Clock, Heart, Package, CheckCircle, Loader2 } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
+import { DeliveryJourney } from '@/components/delivery/DeliveryJourney';
+import { DeliveryTracking } from '@/types/product';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, getCartCount } = useCart();
+  const { cartItems, removeFromCart, getCartCount, clearCart } = useCart();
   const containerRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [trackingData, setTrackingData] = useState<DeliveryTracking | null>(null);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
   const totalYears = cartItems.reduce((sum, item) => sum + item.product.metrics.usageYears, 0);
   const totalMemories = cartItems.reduce((sum, item) => sum + item.product.memories.length, 0);
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    
+    setIsProcessing(true);
+    
+    // Simulate checkout process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Create tracking data for the first product
+    const product = cartItems[0].product;
+    const now = new Date();
+    const estimatedArrival = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+    
+    const tracking: DeliveryTracking = {
+      orderId: `ORD-${Date.now()}`,
+      product: product,
+      status: 'farewell',
+      statusHistory: [
+        {
+          status: 'farewell',
+          date: now.toISOString(),
+          message: `${product.name} is being carefully prepared for its journey to you`
+        }
+      ],
+      estimatedArrival: estimatedArrival.toISOString(),
+      currentLocation: product.currentLocation,
+      journeyProgress: 15
+    };
+    
+    setTrackingData(tracking);
+    setOrderPlaced(true);
+    setIsProcessing(false);
+    clearCart();
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -65,6 +105,49 @@ const Cart = () => {
       removeFromCart(productId);
     }
   };
+
+  // Order placed success view
+  if (orderPlaced && trackingData) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-6 py-12">
+          {/* Success Header */}
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-6">
+              <CheckCircle className="h-10 w-10 text-primary" />
+            </div>
+            <h1 className="font-serif text-4xl md:text-5xl text-foreground mb-4">
+              Order Placed Successfully!
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-md mx-auto">
+              Your new treasure is beginning its journey to you. A new chapter awaits.
+            </p>
+            <div className="mt-4 inline-block px-4 py-2 bg-card rounded-lg border border-border">
+              <span className="text-sm text-muted-foreground">Order ID: </span>
+              <span className="text-sm font-mono text-foreground">{trackingData.orderId}</span>
+            </div>
+          </div>
+
+          {/* Delivery Journey Tracking */}
+          <div className="bg-card rounded-2xl border border-border p-8 mb-12">
+            <DeliveryJourney tracking={trackingData} />
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild variant="outline" size="lg">
+              <Link to="/browse">Continue Browsing</Link>
+            </Button>
+            <Button asChild size="lg">
+              <Link to="/">Back to Home</Link>
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -237,9 +320,23 @@ const Cart = () => {
                 </div>
               </div>
 
-              <Button className="w-full group" size="lg">
-                Proceed to Checkout
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <Button 
+                className="w-full group" 
+                size="lg"
+                onClick={handleCheckout}
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Proceed to Checkout
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
               </Button>
 
               <p className="text-xs text-muted-foreground text-center mt-4">
